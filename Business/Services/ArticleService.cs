@@ -1,27 +1,62 @@
-﻿using Business.Interfaces;
+﻿using Business.Factories;
+using Business.Helpers;
+using Business.Interfaces;
 using Business.Models;
+using System.Diagnostics;
+using System.Text.Json;
 
 namespace Business.Services;
 
-public class ArticleService : IArticleService
+public class ArticleService(IProductRepository productRepository) : IArticleService
 {
-    public bool CreateProductItem(ProductRegistrationForm form)
+    private readonly IProductRepository _productRepository = productRepository;
+    private List<ProductEntity> _items = [];
+
+    public bool CreateItem(ItemRegistrationForm form)
+    {
+        try
+        {
+            var productEntity = ProductFactory.Create(form);
+            productEntity.Id = IdGenerator.GenerateUniqueId();
+
+            _items.Add(productEntity);
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return false;
+        }
+    }
+
+    public bool CreateItem(ProductRegistrationForm form)
     {
         throw new NotImplementedException();
     }
 
-    public bool CreateServiceItem(ServiceRegistrationForm form)
+    public IEnumerable<Product> GetAllItems()
     {
-        throw new NotImplementedException();
+        _items = _productRepository.GetFromFile()!;
+
+        return _items.Select(item => ProductFactory.Create(item));
     }
 
-    public IEnumerable<Product> GetProductItems()
+    public IEnumerable<Product> GetAllProductItems()
     {
-        throw new NotImplementedException();
+        _items = _productRepository.GetFromFile()!;
+
+        return _items
+            .Where(item => item.IsService == false)
+            .Select(item => ProductFactory.Create(item));
     }
 
-    public IEnumerable<Product> GetServiceItems()
+    public IEnumerable<Product> GetAllServiceItems()
     {
-        throw new NotImplementedException();
+        _items = _productRepository.GetFromFile()!;
+
+        return _items
+            .Where(item => item.IsService == true)
+            .Select(item => ProductFactory.Create(item));
     }
 }

@@ -1,5 +1,5 @@
 ﻿namespace Business.Interfaces;
 
-public interface IUserFileService : IFileService
+public interface IUserRepository : IFileService
 {
 }

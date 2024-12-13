@@ -4,8 +4,7 @@ namespace Business.Interfaces;
 
 public interface IProductItemService
 {
-    bool CreateProductItem(ProductRegistrationForm form);
-    IEnumerable<Product> GetProductItems();
+    IEnumerable<Product> GetAllProductItems();
 
 }
 

@@ -58,7 +58,8 @@ public class ProductFactory
             ArticleNumber = entity.ArticleNumber,
             Title = entity.Title,
             Description = entity.Description,
-            Price = entity.Price
+            Price = entity.Price,
+            IsService = entity.IsService
         };
     }
 }
